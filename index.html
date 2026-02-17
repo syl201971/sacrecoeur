@@ -17,8 +17,25 @@ h1 { margin:0; font-size:2.5em; }
 .qr-code { width:200px; height:200px; background:#ddd; border:2px dashed #ccc; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:0.8em; color:#666; cursor:pointer; }
 .countdown { font-size:1.5em; color:#DC143C; font-weight:bold; }
 button { padding:12px 24px; font-size:1em; background:#DC143C; color:white; border:none; border-radius:5px; cursor:pointer; }
-@media (max-width:768px){ h1{font-size:2em} .hero{padding:20px 10px} .event-details{padding:15px} .qr-code{width:150px;height:150px;font-size:0.7em} .container{padding:10px} }
-@media (min-width:769px){ .container{padding:40px} h1{font-size:3em} }
+#confirmation { margin-top:10px; color:green; font-weight:bold; }
+@keyframes highlight {
+  0% { color: #DC143C; transform: scale(1); }
+  50% { color: #FF4500; transform: scale(1.2); }
+  100% { color: #DC143C; transform: scale(1); }
+}
+.countdown.updated { animation: highlight 0.5s ease-in-out; }
+
+@media (max-width:768px){
+    h1{font-size:2em} 
+    .hero{padding:20px 10px} 
+    .event-details{padding:15px} 
+    .qr-code{width:150px;height:150px;font-size:0.7em} 
+    .container{padding:10px} 
+}
+@media (min-width:769px){ 
+    .container{padding:40px} 
+    h1{font-size:3em} 
+}
 </style>
 </head>
 <body>
@@ -31,7 +48,7 @@ button { padding:12px 24px; font-size:1em; background:#DC143C; color:white; bord
 <div class="container">
 
 <section class="hero">
-<video autoplay loop muted playsinline>
+<video autoplay loop muted playsinline preload="metadata">
     <source src="videos/grok-video-eca34fe0-dc30-49fc-9352-8b15a953cb73.mp4" type="video/mp4">
     Votre navigateur ne supporte pas la lecture de la vidéo.
 </video>
@@ -56,6 +73,7 @@ button { padding:12px 24px; font-size:1em; background:#DC143C; color:white; bord
     <button onclick="incrementParticipant()">Réserver ici</button>
 </div>
 
+<div id="confirmation"></div>
 <div id="compteur-participants" class="countdown" style="margin-top:20px;">Chargement...</div>
 </section>
 
@@ -96,29 +114,35 @@ signInAnonymously(auth).catch(err => console.error('Firebase auth error:', err))
 const counterRef = doc(db,'counters','participants');
 let hasClicked = localStorage.getItem('hasClickedThisSession') || false;
 
-// Real-time participant counter
+// Real-time participant counter with animation
 onSnapshot(counterRef, (docSnap) => {
   if(docSnap.exists()){
     const count = docSnap.data().count || 0;
-    document.getElementById('compteur-participants').innerText = `${count} participant${count!==1?'s':''} inscrit${count!==1?'s':''} ! Rejoignez-nous !`;
+    const counterEl = document.getElementById('compteur-participants');
+    counterEl.innerText = `${count} participant${count!==1?'s':''} inscrit${count!==1?'s':''} ! Rejoignez-nous !`;
+    
+    counterEl.classList.add('updated');
+    setTimeout(() => counterEl.classList.remove('updated'), 500);
   }
 });
 
 // Increment function for QR code or button
 window.incrementParticipant = async function(){
+  const confirmDiv = document.getElementById('confirmation');
   if(!hasClicked){
     try {
       await updateDoc(counterRef,{count: increment(1)});
-      const newCount = (await getDoc(counterRef)).data().count;
       localStorage.setItem('hasClickedThisSession','true');
       hasClicked = true;
-      alert('Merci de votre inscription !');
+      confirmDiv.innerText = 'Merci ! Votre réservation est confirmée.';
+      setTimeout(() => { confirmDiv.innerText = ''; }, 5000);
     } catch(err){
       console.error('Erreur incrément:',err);
       alert('Erreur : Réessayez plus tard.');
     }
   } else {
-    alert('Vous avez déjà cliqué dans cette session.');
+    confirmDiv.innerText = 'Vous avez déjà réservé dans cette session.';
+    setTimeout(() => { confirmDiv.innerText = ''; }, 5000);
   }
 };
 
