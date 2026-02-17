@@ -1,155 +1,159 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Sacré-Cœur, son règne n’a pas de fin – Projection</title>
-<meta name="description" content="Projection du film Sacré-Cœur, son règne n’a pas de fin à l’Église de Chute-aux-Outardes le 7 mars à 18h30. Entrée libre.">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  background: #f4f4f4;
-  color: #333;
-}
-header {
-  background: linear-gradient(to right, #8B0000, #B22222);
-  color: white;
-  text-align: center;
-  padding: 30px 20px;
-}
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
-}
-.hero {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  text-align: center;
-}
-.hero img {
-  max-width: 100%;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,.15);
-}
-.event-details {
-  margin-top: 25px;
-  background: #e9ecef;
-  padding: 20px;
-  border-radius: 10px;
-}
-.reserve {
-  text-align: center;
-  margin: 40px 0;
-}
-.reserve button {
-  font-size: 1.2em;
-  padding: 15px 30px;
-  border: none;
-  border-radius: 8px;
-  background: #B22222;
-  color: white;
-  cursor: pointer;
-}
-.reserve button:hover {
-  background: #8B0000;
-}
-.count {
-  margin-top: 20px;
-  font-size: 1.4em;
-  font-weight: bold;
-  color: #B22222;
-}
-footer {
-  background: #333;
-  color: white;
-  text-align: center;
-  padding: 20px;
-}
-</style>
-
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js';
-import { getFirestore, doc, updateDoc, increment, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
-import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAcxVNsIt4YsrrvhfyQWvZypHym0Cv3z8A",
-  authDomain: "marche-pour-jesus.firebaseapp.com",
-  projectId: "marche-pour-jesus"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-signInAnonymously(auth);
-
-const counterRef = doc(db, 'counters', 'sacre-coeur-chute-aux-outardes');
-let alreadyClicked = localStorage.getItem('presence');
-
-onSnapshot(counterRef, snap => {
-  if (snap.exists()) {
-    const n = snap.data().count || 0;
-    document.getElementById("counter").innerText =
-      n + " personne" + (n > 1 ? "s" : "") + " inscrite" + (n > 1 ? "s" : "");
-  }
-});
-
-window.reserve = async () => {
-  if (alreadyClicked) {
-    alert("Votre présence est déjà confirmée.\nMerci 🙏");
-    return;
-  }
-  await updateDoc(counterRef, { count: increment(1) });
-  localStorage.setItem('presence', 'true');
-  alreadyClicked = true;
-  alert("Merci ! Votre présence a bien été enregistrée.\nQue le Sacré-Cœur vous bénisse 🙏");
-};
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacré-Cœur, son règne n’a pas de fin - Église de Chute-aux-Outardes</title>
+    <meta name="description" content="Projection du film 'Sacré-Cœur, son règne n’a pas de fin' à l'Église de Chute-aux-Outardes le 7 mars 2026 à 18h30. Réservez votre place au 581 334 2006.">
+    <style>
+        body { 
+            font-family: 'Arial', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f4f4; 
+            color: #333; 
+            line-height: 1.6; 
+            overflow-x: hidden; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+        header { 
+            background: linear-gradient(to right, #8B0000, #DC143C); 
+            color: white; 
+            text-align: center; 
+            padding: 20px; 
+        }
+        h1 { margin: 0; font-size: 2.5em; }
+        .hero { 
+            text-align: center; 
+            padding: 40px 20px; 
+            background: #fff; 
+        }
+        .hero video { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .event-details { 
+            background: #e9ecef; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0; 
+        }
+        .qr-section { 
+            text-align: center; 
+            margin: 40px 0; 
+        }
+        .qr-code { 
+            width: 200px; 
+            height: 200px; 
+            background: #ddd; 
+            border: 2px dashed #ccc; 
+            margin: 0 auto 20px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 0.8em; 
+            color: #666; 
+        }
+        .itinerary { 
+            background: #fff; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+        .map { 
+            height: 400px; 
+            margin: 20px 0; 
+            border-radius: 10px; 
+            overflow: hidden; 
+            width: 100%; 
+            max-width: 100%; 
+            box-sizing: border-box; 
+        }
+        footer { 
+            background: #333; 
+            color: white; 
+            text-align: center; 
+            padding: 20px; 
+        }
+        .countdown { 
+            font-size: 1.5em; 
+            color: #DC143C; 
+            font-weight: bold; 
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .hero { padding: 20px 10px; }
+            .event-details { padding: 15px; }
+            .map { height: 250px; max-width: 100% !important; overflow-x: hidden; }
+            .itinerary { padding: 10px; overflow-x: hidden; }
+            .qr-code { width: 150px; height: 150px; font-size: 0.7em; }
+            .container { padding: 10px; }
+        }
+        @media (min-width: 769px) {
+            .container { padding: 40px; }
+            h1 { font-size: 3em; }
+            .map { height: 450px; }
+        }
+    </style>
 </head>
-
 <body>
+    <header>
+        <h1>Sacré-Cœur, son règne n’a pas de fin</h1>
+        <p>Église de Chute-aux-Outardes, 7 mars 2026 à 18h30</p>
+    </header>
 
-<header>
-  <h1>Sacré-Cœur, son règne n’a pas de fin</h1>
-  <p>Projection – Entrée libre</p>
-</header>
+    <div class="container">
+        <section class="hero">
+            <video controls>
+                <source src="images/grok-video-eca34fe0-dc30-49fc-9352-8b15a953cb73.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la lecture de la vidéo.
+            </video>
+            <div class="event-details">
+                <h2>Réservez votre place dès maintenant !</h2>
+                <p><strong>Téléphone :</strong> 581 334 2006</p>
+                <div class="countdown" id="countdown"></div>
+            </div>
+        </section>
 
-<div class="container">
+        <section class="qr-section">
+            <h2>Confirmez votre présence</h2>
+            <p>Scannez le QR code pour réserver votre place :</p>
+            <div class="qr-code">
+                <img src="images/sacrecoeur_qr.png" alt="QR Code Sacré-Cœur" width="200" height="200">
+                <p>(Cliquez ou scannez pour vous inscrire)</p>
+            </div>
+        </section>
 
-<section class="hero">
-  <img src="https://syl201971.github.io/sacrecoeur/images/grok-video-eca34fe0-dc30-49fc-9352-8b15a953cb73.mp4"
-       alt="Sacré-Cœur de Jésus">
+        <section class="itinerary">
+            <h2>Itinéraire de la projection</h2>
+            <p>Église de Chute-aux-Outardes - Venez découvrir le film et participer à la discussion après la projection.</p>
+        </section>
 
-  <div class="event-details">
-    <h2>Projection du film</h2>
-    <p>
-      Un film profondément spirituel qui nous invite à redécouvrir
-      l’amour, la miséricorde et le règne du Sacré-Cœur de Jésus
-      dans notre monde d’aujourd’hui.
-    </p>
-    <p><strong>📍 Lieu :</strong> Église de Chute-aux-Outardes</p>
-    <p><strong>📅 Date :</strong> 7 mars</p>
-    <p><strong>🕡 Heure :</strong> 18h30</p>
-  </div>
-</section>
+        <section class="event-details">
+            <h2>Pourquoi ce film ?</h2>
+            <p>Une expérience cinématographique inspirante sur le règne de Jésus. Ouvert à tous les fidèles.</p>
+            <p><strong>Contact :</strong> 581 334 2006</p>
+        </section>
+    </div>
 
-<section class="reserve">
-  <h2>Confirmez votre présence</h2>
-  <p>Cliquez ci-dessous pour nous aider à prévoir l’accueil</p>
-  <button onclick="reserve()">Je serai présent</button>
-  <div id="counter" class="count">Chargement…</div>
-</section>
+    <footer>
+        <p>&copy; 2026 Sacré-Cœur - Église de Chute-aux-Outardes. Gloire à Dieu !</p>
+    </footer>
 
-</div>
-
-<footer>
-  <p>&copy; Projection paroissiale – Sacré-Cœur</p>
-</footer>
-
-</body>
-</html>
+    <script>
+        // Countdown to 7 mars 2026, 18h30
+        function countdown() {
+            const eventDate = new Date('2026-03-07T18:30:00').getTime();
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+            const days = Ma
