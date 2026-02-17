@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sacré-Cœur, son règne n’a pas de fin – Projection</title>
+<meta name="description" content="Projection du film Sacré-Cœur, son règne n’a pas de fin à l’Église de Chute-aux-Outardes le 7 mars à 18h30. Entrée libre.">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f4f4;
+  color: #333;
+}
+header {
+  background: linear-gradient(to right, #8B0000, #B22222);
+  color: white;
+  text-align: center;
+  padding: 30px 20px;
+}
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+.hero {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+}
+.hero img {
+  max-width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,.15);
+}
+.event-details {
+  margin-top: 25px;
+  background: #e9ecef;
+  padding: 20px;
+  border-radius: 10px;
+}
+.reserve {
+  text-align: center;
+  margin: 40px 0;
+}
+.reserve button {
+  font-size: 1.2em;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  background: #B22222;
+  color: white;
+  cursor: pointer;
+}
+.reserve button:hover {
+  background: #8B0000;
+}
+.count {
+  margin-top: 20px;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #B22222;
+}
+footer {
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+</style>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js';
+import { getFirestore, doc, updateDoc, increment, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAcxVNsIt4YsrrvhfyQWvZypHym0Cv3z8A",
+  authDomain: "marche-pour-jesus.firebaseapp.com",
+  projectId: "marche-pour-jesus"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+signInAnonymously(auth);
+
+const counterRef = doc(db, 'counters', 'sacre-coeur-chute-aux-outardes');
+let alreadyClicked = localStorage.getItem('presence');
+
+onSnapshot(counterRef, snap => {
+  if (snap.exists()) {
+    const n = snap.data().count || 0;
+    document.getElementById("counter").innerText =
+      n + " personne" + (n > 1 ? "s" : "") + " inscrite" + (n > 1 ? "s" : "");
+  }
+});
+
+window.reserve = async () => {
+  if (alreadyClicked) {
+    alert("Votre présence est déjà confirmée.\nMerci 🙏");
+    return;
+  }
+  await updateDoc(counterRef, { count: increment(1) });
+  localStorage.setItem('presence', 'true');
+  alreadyClicked = true;
+  alert("Merci ! Votre présence a bien été enregistrée.\nQue le Sacré-Cœur vous bénisse 🙏");
+};
+</script>
+</head>
+
+<body>
+
+<header>
+  <h1>Sacré-Cœur, son règne n’a pas de fin</h1>
+  <p>Projection – Entrée libre</p>
+</header>
+
+<div class="container">
+
+<section class="hero">
+  <img src="https://syl201971.github.io/marchepourjesus/images/grok-image-e29b0bc2-18bd-4d72-bced-7589803053d7.png"
+       alt="Sacré-Cœur de Jésus">
+
+  <div class="event-details">
+    <h2>Projection du film</h2>
+    <p>
+      Un film profondément spirituel qui nous invite à redécouvrir
+      l’amour, la miséricorde et le règne du Sacré-Cœur de Jésus
+      dans notre monde d’aujourd’hui.
+    </p>
+    <p><strong>📍 Lieu :</strong> Église de Chute-aux-Outardes</p>
+    <p><strong>📅 Date :</strong> 7 mars</p>
+    <p><strong>🕡 Heure :</strong> 18h30</p>
+  </div>
+</section>
+
+<section class="reserve">
+  <h2>Confirmez votre présence</h2>
+  <p>Cliquez ci-dessous pour nous aider à prévoir l’accueil</p>
+  <button onclick="reserve()">Je serai présent</button>
+  <div id="counter" class="count">Chargement…</div>
+</section>
+
+</div>
+
+<footer>
+  <p>&copy; Projection paroissiale – Sacré-Cœur</p>
+</footer>
+
+</body>
+</html>
